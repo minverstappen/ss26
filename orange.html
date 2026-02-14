@@ -974,15 +974,20 @@ document.addEventListener('mousemove', (e) => {
 
 // ====== SCENE MANAGEMENT ======
 let currentScene = 'splash';
-function goToScene(id) {
+function goToScene(id, fromPopState) {
   document.getElementById(currentScene).classList.remove('active');
   document.getElementById(id).classList.add('active');
+  if (!fromPopState) history.pushState({ scene: id }, '', '#' + id);
   currentScene = id;
   if (id === 'reasons') animateReasons();
   if (id === 'lovemeter') initMeter();
   if (id === 'question') initQuestion();
   if (id === 'celebration') startCelebration();
 }
+history.replaceState({ scene: 'splash' }, '', '#splash');
+window.addEventListener('popstate', (e) => {
+  if (e.state && e.state.scene) goToScene(e.state.scene, true);
+});
 
 // ====== ENVELOPE ======
 let envelopeOpened = false;
